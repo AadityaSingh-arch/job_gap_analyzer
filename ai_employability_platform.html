@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="description" content="CareerPath — skill gap identification, career pathing and job matching demo">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Demo — CareerPath</title>
+  <link rel="stylesheet" href="ai_employability_platform.css">
+  <script src="ai_employability_platform.js" defer></script>
+</head>
+<body>
+  <!-- <h2 class="sr-only">Employability Platform — Skill Gap Identification and Personalized Career Pathing</h2> -->
+
+<div class="app">
+<header>
+  <div class="logo">
+    <div class="logo-icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2 L2 7 L12 12 L22 7 Z M2 12 L12 17 L22 12" fill="currentColor"/></svg></div>
+    <div>
+      <div class="logo-text">CareerPath</div>
+      <div class="logo-sub">Skill gap · career pathing · job matching</div>
+    </div>
+  </div>
+  <nav id="main-nav">
+    <button class="nav-btn active" onclick="gotoPage('home')"><span>Home</span></button>
+    <button class="nav-btn" onclick="gotoPage('assess')" id="nav-assess">Assessment</button>
+    <button class="nav-btn" onclick="gotoPage('gaps')" id="nav-gaps">Skill Gaps</button>
+    <button class="nav-btn" onclick="gotoPage('path')" id="nav-path">Career Path</button>
+    <button class="nav-btn" onclick="gotoPage('jobs')" id="nav-jobs">Jobs</button>
+    <button class="nav-btn nav-demo" id="demo-toggle" onclick="toggleDemoMode()">Demo Mode</button>
+  </nav>
+</header>
+
+<div class="content">
+
+<!-- HOME -->
+<div class="page active" id="page-home">
+  <div style="text-align:center;padding:2rem 0 1.5rem">
+    <div style="font-size:28px;font-weight:500;margin-bottom:8px">Identify your skill gaps.</div>
+    <div style="font-size:28px;font-weight:500;color:#3266ad;margin-bottom:16px">Find your ideal career path.</div>
+    <div style="font-size:14px;color:var(--color-text-secondary);max-width:420px;margin:0 auto 24px;line-height:1.7">A platform that analyzes your skills, identifies gaps, and recommends a personalized route to your target role.</div>
+    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+      <button class="btn primary" onclick="gotoPage('assess')">Start assessment ↗</button>
+      <button class="btn" onclick="loadDemo()">Load demo profile</button>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-top:1rem">
+    <div class="card" style="text-align:center">
+      <div style="font-size:13px;font-weight:500;margin-bottom:4px">Skill assessment</div>
+      <div style="font-size:12px;color:var(--color-text-secondary)">Map your current skills accurately</div>
+    </div>
+    <div class="card" style="text-align:center">
+      <div style="font-size:13px;font-weight:500;margin-bottom:4px">Gap analysis</div>
+      <div style="font-size:12px;color:var(--color-text-secondary)">See exactly what's missing for your target role</div>
+    </div>
+    <div class="card" style="text-align:center">
+      <div style="font-size:13px;font-weight:500;margin-bottom:4px">Career pathing</div>
+      <div style="font-size:12px;color:var(--color-text-secondary)">Personalized roadmap from where you are to where you want to be</div>
+    </div>
+    <div class="card" style="text-align:center">
+      <div style="font-size:13px;font-weight:500;margin-bottom:4px">Job matching</div>
+      <div style="font-size:12px;color:var(--color-text-secondary)">Roles matched to your profile with fit scores</div>
+    </div>
+  </div>
+</div>
+
+<!-- ASSESSMENT -->
+<div class="page" id="page-assess">
+  <div class="card">
+    <div class="card-title">Step 1 — Tell us about yourself</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+      <div>
+        <div class="section-label">Your name</div>
+        <input id="user-name" placeholder="e.g. Priya Sharma" style="width:100%">
+      </div>
+      <div>
+        <div class="section-label">Target role</div>
+        <select id="target-role" style="width:100%;padding:8px;border-radius:6px;border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-primary);font-size:13px;font-family:var(--font-sans)">
+          <option value="">Select a role...</option>
+          <option value="fullstack">Full Stack Developer</option>
+          <option value="ml">ML Engineer</option>
+          <option value="data">Data Analyst</option>
+          <option value="devops">DevOps / Cloud Engineer</option>
+          <option value="pm">Product Manager</option>
+          <option value="ux">UX Designer</option>
+          <option value="quant">Quant Analyst</option>
+          <option value="finance">Financial Analyst</option>
+        </select>
+      </div>
+    </div>
+    <div style="margin-bottom:12px">
+      <div class="section-label">Years of experience</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <input type="range" id="exp-range" min="0" max="15" value="2" style="flex:1" oninput="document.getElementById('exp-val').textContent=this.value">
+        <span id="exp-val" style="min-width:32px;font-size:13px;color:var(--color-text-secondary)">2</span>
+        <span style="font-size:12px;color:var(--color-text-tertiary)">years</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Step 2 — Select your current skills</div>
+    <input class="skill-search" id="skill-search" placeholder="Search skills..." oninput="filterSkills(this.value)">
+    <div id="skills-grid" style="display:flex;flex-wrap:wrap;gap:6px"></div>
+  </div>
+
+  <div class="card" id="projects-card">
+    <div class="card-title">Step 3 — Projects you've worked on</div>
+    <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:10px">Add projects (title, tech stack, short description). We'll use these to detect additional skills for the analysis.</div>
+    <div id="projects-list">
+      <div class="project-item">
+        <input class="proj-title" placeholder="Project title (e.g. Expense Tracker)" style="width:100%;margin-bottom:6px;padding:8px;border-radius:6px;border:0.5px solid var(--color-border-secondary)">
+        <input class="proj-stack" placeholder="Tech / stack (comma separated)" style="width:100%;margin-bottom:6px;padding:8px;border-radius:6px;border:0.5px solid var(--color-border-secondary)">
+        <textarea class="proj-desc" placeholder="Short description (what you built / your role)" style="width:100%;min-height:64px;padding:8px;border-radius:6px;border:0.5px solid var(--color-border-secondary)"></textarea>
+        <div style="display:flex;gap:6px;margin-top:8px"><button class="btn" onclick="removeProject(this)">Remove</button></div>
+        <hr style="margin:12px 0;border:none;border-top:0.5px solid var(--color-border-tertiary)">
+      </div>
+    </div>
+    <div style="display:flex;gap:8px"><button class="btn" onclick="addProject()">Add project</button><button class="btn" onclick="clearProjects()">Clear projects</button></div>
+  </div>
+
+  <button class="btn primary" style="width:100%;padding:12px" onclick="runAnalysis()">Analyze my profile →</button>
+</div>
+
+<!-- GAPS -->
+<div class="page" id="page-gaps">
+  <div id="gaps-content"><div class="empty">Complete the assessment first to see your skill gap analysis.</div></div>
+</div>
+
+<!-- PATH -->
+<div class="page" id="page-path">
+  <div id="path-content"><div class="empty">Complete the assessment first to see your career path.</div></div>
+</div>
+
+<!-- JOBS -->
+<div class="page" id="page-jobs">
+  <div id="jobs-content"><div class="empty">Complete the assessment first to see matched jobs.</div></div>
+</div>
+
+</div>
+</div>
+</body>
+</html>
